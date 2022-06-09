@@ -10,28 +10,27 @@ const TotalWrapper = styled(Box)(() => ({
 
 type TotalProps = {
   items: ShoppingCartItem[];
+  clearItems: (value: ShoppingCartItem[]) => void
 };
 
-const Total: React.FC<TotalProps> = ({ items }) => {
-  console.log(items)
-
+const Total: React.FC<TotalProps> = ({ items, clearItems }) => {
   const products = items.map((item) => {
-    return PRODUCTS_MAP[item.productId].id;
+    return item.quantity * PRODUCTS_MAP[item.productId].price;
   })
- 
-  const existingItem = items.find(item => item.productId === products.find((product) => product))
-  console.log(existingItem)
 
+  const clearItemsHandler = () => {
+    clearItems([])
+  }
 
   return (
     <TotalWrapper>
       <Grid container>
         <Grid item xs={6}>
          
-          <Typography>{`Total: ${}`}</Typography>
+          <Typography>{`Total: ${products.reduce((a,b) => a + b)}`}</Typography>
         </Grid>
         <Grid item xs={6}>
-          <Button variant="outlined">Clear</Button>
+          <Button variant="outlined" onClick={clearItemsHandler}>Clear</Button>
         </Grid>
       </Grid>
     </TotalWrapper>

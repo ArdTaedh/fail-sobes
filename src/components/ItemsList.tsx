@@ -19,51 +19,43 @@ export const ItemsList = ({ items, setItems }: ItemsListProps) => {
             {
                 items.map(item => {
                     const product = PRODUCTS_MAP[item.productId];
-                    const price = product?.price || 0;           
-
-                    console.log(items)
+                    const price = product?.price || 0;
 
                     const plusQuantityHandler = (id: string) => {
-                        const index = items.findIndex(item => item.productId === id)
-
-                        if (index === -1) 
-                            return 
-
-                        const item = items[index]
-
-                        const updatedItem = {
-                            ...item,
-                            quantity: item.quantity++
-                        }
-
-                        const updatedArray = [...items]
-
-                        setItems(updatedArray)
+                        //@ts-ignore
+                        setItems(prev =>
+                            //@ts-ignore
+                            prev.find(item => item.productId === id)
+                                //@ts-ignore
+                                ? prev.map(item => ({
+                                    ...item,
+                                    quantity: item.productId === id ? item.quantity + 1 : item.quantity,
+                                }))
+                                : [...prev]
+                        );
                     }
 
-
                     const minusQuantityHandler = (id: string) => {
-                        const index = items.findIndex(item => item.productId === id)
+                        //@ts-ignore
+                        setItems(prev =>
+                              //@ts-ignore
+                            prev.find(item => item.productId === id)?.quantity === 1
+                              //@ts-ignore
+                                ? prev.filter(item => item.productId !== id)
+                                  //@ts-ignore
+                                : prev.map(item => ({
+                                        ...item,
+                                        quantity: item.productId === id ? item.quantity - 1 : item.quantity,
+                                  })),
+                        );
+                    }
 
-                        if (index === -1) 
-                            return 
-
-                        const item = items[index]
-
-                        console.log(id)
-
-                        if (item.productId === id && item.quantity === 1) {
-                            setItems(items.filter(item => item.productId !== id))
-                        } else {
-                            const updatedItem = {
-                                ...item,
-                                quantity: item.quantity--
-                            }
-                        }
-
-                        const updatedArray = [...items]
-
-                        setItems(updatedArray)
+                    const removeItemHandler = (id: string) => {
+                        //@ts-ignore
+                        setItems(prev =>
+                            //@ts-ignore
+                            prev.filter(item => item.productId !== id)
+                        );
                     }
 
                     return (
@@ -93,7 +85,6 @@ export const ItemsList = ({ items, setItems }: ItemsListProps) => {
                                 aria-label="outlined button group"
                             >
                                 <Button
-                                    // onClick={() => setPlusQuantityHandler(item.productId)}
                                     onClick={() => plusQuantityHandler(item.productId)}
                                 >
                                     +
@@ -103,7 +94,11 @@ export const ItemsList = ({ items, setItems }: ItemsListProps) => {
                                 >
                                     -
                                 </Button>
-                                <Button>x</Button>
+                                <Button
+                                    onClick={() => removeItemHandler(item.productId)}
+                                >
+                                    x
+                                </Button>
                             </ButtonGroup>
                         </Grid>
                     )

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { ShoppingCartItem } from '../models';
 import { AddItemForm } from './AddItemForm';
 import { ItemsList } from './ItemsList';
+import Total from './Total';
 
 const ShoppingCardWrapper = styled(Paper)(() => ({
     width: 600,
@@ -19,15 +20,15 @@ const ShoppingCardWrapper = styled(Paper)(() => ({
   }));
 
 export const ShoppingCart = () => {
-
     const [items, setItems] = useState<ShoppingCartItem[]>([])
-    
+
     return (
         <ShoppingCardWrapper>
             <ShoppingCartHeader>
                 Shopping Cart
             </ShoppingCartHeader>
-            <AddItemForm 
+            <AddItemForm
+                items={items}
                 addToCart={setItems}
             />
             {
@@ -39,6 +40,7 @@ export const ShoppingCart = () => {
                         />
                         <Total
                             items={items}
+                            clearItems={setItems}
                         />
                     </>
                 )

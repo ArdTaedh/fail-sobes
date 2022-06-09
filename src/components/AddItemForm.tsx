@@ -21,9 +21,10 @@ const QuantityInputWrapper = styled(FormControl)(() => ({
 
 type AddItemProps = {
     addToCart: (value: ShoppingCartItem[]) => void
+    items: ShoppingCartItem[]
 }
 
-export const AddItemForm = ({ addToCart }: AddItemProps) => {
+export const AddItemForm = ({ addToCart, items }: AddItemProps) => {
     const [productId, setProductId] = useState<string | "">("");
     const [quantity, setQuantity] = useState<number>(0);
 
@@ -37,8 +38,16 @@ export const AddItemForm = ({ addToCart }: AddItemProps) => {
 
     const setAddToCartHandler = (product: string, q: number) => {
         //@ts-ignore
-        addToCart((prevState: ShoppingCartItem) => [...prevState, {productId: product , quantity: q}])
-
+        addToCart(prev =>
+            //@ts-ignore
+            prev.find(item => item.productId === product)
+                //@ts-ignore
+                ? prev.map(item => ({
+                    ...item,
+                    quantity: item.productId === product ? item.quantity + 1 : item.quantity,
+                }))
+                : [...prev, { productId: product , quantity: q }]
+        );
       }
 
     return (
